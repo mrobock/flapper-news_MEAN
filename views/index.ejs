@@ -1,11 +1,124 @@
-<!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <title>My Angular App!</title>
+
+<!-- Load bootstrap -->
+    <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+
+
+<!-- Load base Angular -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+<!-- Load UI Router -->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.3.2/angular-ui-router.js"></script>
+<!-- Load App.JS -->
+    <script src="/javascripts/angularApp.js"></script>
+
+<!-- I guess this is to add a glyphicon icon for the upvoting? -->
+    <style> .glyphicon-thumbs-up { cursor:pointer } </style>
+
+<!-- Adding in some bootstrap styling for a navbar -->
+    <style>
+        .navbar { border-radius:0; }
+    </style>
+
   </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+
+  <body ng-app="flapperNews">
+<!-- Nav bar! -->
+    <nav class="navbar navbar-default pull-right" role="navigation">
+        <div class="navbar-header">
+            <a class="navbar-brand" ui-sref="#">AngularUI Router</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li><a ui-sref="home">Home</a></li>
+            <li><a ui-sref="posts">Posts</a></li>
+        </ul>
+    </nav>
+
+
+<!-- Actual Body -->
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3">
+          <ui-view></ui-view>
+        </div>
+      </div>
+
+    <!--
+
+     -->
+
+
+    <!--  The below button originally linked to the addPost function but was replaced by a form-->
+    <!-- <button ng-click="addPost()">Post</button> -->
+
+<!-- Load Home Template -->
+    <script type="text/ng-template" id="/home.html">
+      <div class="page-header">
+        <h1>Flapper News</h1>
+      </div>
+
+      <div ng-repeat="post in posts | orderBy: '-upvotes'">
+        <span class="glyphicon glyphicon-thumbs-up" ng-click="incrementUpvotes(post)"></span>
+        {{post.upvotes}}
+        <span style="font-size:20px; margin-left:10px;">
+          <a ng-show="post.link" href="{{post.link}}">
+            {{post.title}}
+          </a>
+          <span ng-hide="post.link">
+            {{post.title}}
+          </span>
+        </span>
+        <span>
+          <a href="#/posts/{{$index}}">Comments</a>
+        </span>
+      </div>
+
+      <form ng-submit="addPost()" style="margin-top:30px;">
+        <h3>Add a new post</h3>
+
+        <div class="form-group">
+          <input type="text" placeholder="Title" ng-model="title" class="form-control"/>
+        </div>
+        <div class="form-group">
+          <input type="text" placeholder="Link" ng-model="link" />
+        </div>
+        <button type="submit">Post</button>
+      </form>
+    <!-- rest of template -->
+
+    </script>
+
+<!-- Load Posts template including comments  -->
+    <script type="text/ng-template" id="/posts.html">
+      <div class="page-header">
+        <h3>
+          <a ng-show="post.link" href="{{post.link}}">
+            {{post.title}}
+          </a>
+          <span ng-hide="post.link">
+            {{post.title}}
+          </span>
+        </h3>
+      </div>
+
+      <div ng-repeat="comment in post.comments | orderBy:'-upvotes'">
+        <span class="glyphicon glyphicon-thumbs-up" ng-click="incrementUpvotes(comment)"></span>
+        {{comment.upvotes}} - by {{comment.author}}
+        <span style="font-size;20px; margin-left:10px;">
+          {{comment.body}}
+        </span>
+      </div>
+
+      <form ng-submit="addComment()" style="margin-top:30px;">
+        <h3>Add a new comment</h3>
+
+        <div class="form-group">
+          <input type="text" class="form-control" plaeholder="Comment" ng-model="body"></input>
+        </div>
+        <button type="submit" class="btn btn-primary">Post</button>
+      </form>
+
+    </script>
+
   </body>
 </html>
