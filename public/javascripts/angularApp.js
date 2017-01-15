@@ -11,7 +11,7 @@ app.config([
         templateUrl: '/home.html',
         controller: 'MainCtrl'
       }).state('posts', {
-        url: '/posts/{id}',
+        url: '/posts/:id',
         templateUrl: '/posts.html',
         controller: 'PostsCtrl'
       });
@@ -21,10 +21,17 @@ app.config([
   }
 ]);
 
-app.factory('posts', [function() {
+app.factory('posts', ['$http', function($http) {
   var o = {
     posts: []
   };
+
+  o.getAll = function() {
+    return $http.get('/posts').success(function(data){
+      angular.copy(data, o.posts);
+    });
+  };
+
   return o;
 }]);
 
